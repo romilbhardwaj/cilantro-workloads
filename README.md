@@ -1,2 +1,7 @@
 # cilantro-workloads
-Workloads for cilantro
+Workloads for cilantro.
+
+### Pre-requisites
+* Docker
+* Kind
+
