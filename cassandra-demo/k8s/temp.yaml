@@ -1,0 +1,30 @@
+apiVersion: "kubeflow.org/v1alpha2"
+kind: "TFJob"
+metadata:
+  name: "tfjob-gang-scheduling"
+spec:
+  tfReplicaSpecs:
+    Worker:
+      replicas: 1
+      template:
+        spec:
+          schedulerName: kube-batch
+          containers:
+          - args:
+            - python
+            - tf_cnn_benchmarks.py
+            - --batch_size=32
+            - --model=resnet50
+            - --variable_update=parameter_server
+            - --flush_stdout=true
+            - --num_gpus=1
+            - --local_parameter_device=cpu
+            - --device=gpu
+            - --data_format=NHWC
+            image: gcr.io/kubeflow/tf-benchmarks-gpu
+            name: tensorflow
+            resources:
+              limits:
+                nvidia.com/gpu: 1
+            workingDir: /opt/tf-benchmarks/scripts/tf_cnn_benchmarks
+          restartPolicy: OnFailure

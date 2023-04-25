@@ -1,0 +1,2 @@
+RESOURCE_TYPE_CPU = 'cpu'
+RESOURCE_TYPE_GPU = 'gpu'

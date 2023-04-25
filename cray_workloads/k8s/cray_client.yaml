@@ -1,0 +1,41 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: crayclient
+  labels:
+    app: crayclient
+spec:
+  template:
+    metadata:
+      labels:
+        app: crayclient
+    spec:
+      restartPolicy: Never
+      terminationGracePeriodSeconds: 0
+      volumes:
+        - name: log-share
+          emptyDir: {}
+      containers:
+      - name: crayclient
+        image: public.ecr.aws/cilantro/cray-workloads:latest
+        imagePullPolicy: Always
+        volumeMounts:
+          - name: log-share
+            mountPath: /cilantrologs
+
+        command: [ "python", "/cray_workloads/cray_workloads/drivers/cray_runscript.py" ]
+        args: ["--cray-utilfreq", "10",
+               "--cray-logdir", "/cilantrologs",
+               "--cray-workload-type", "sleep_task",
+               "--ray-svc-name", "ray-head",
+               "--sleep-time", "0.2",
+               "--trace-path", "/cray_workloads/traces/twit-b1000-n88600.csv",
+               "--trace-scalefactor", "2"]
+#         Uncomment these lines for debugging
+#        command: [ "/bin/sh" ]
+#        args: [ "-c", "while true; do echo hello; sleep 20;done" ]
+        env:
+          - name: POD_IP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP

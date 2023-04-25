@@ -1,0 +1,17 @@
+# A test cluster for checking eksctl setup.
+---
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: deathstar-test-cluster
+  region: us-west-2
+
+nodeGroups:
+  - name: ng-test
+    instanceType: m5.4xlarge
+    desiredCapacity: 15
+    volumeSize: 100
+    volumeType: gp2
+    labels:
+      nodegroup-name: deathstar-test
